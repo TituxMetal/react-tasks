@@ -893,6 +893,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fontsource/noto-sans-jp@^4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@fontsource/noto-sans-jp/-/noto-sans-jp-4.2.2.tgz#b1bc119ba16d3de6f0198287d7a8ce03a283cf70"
+  integrity sha512-Y8pWN4kGKCSde0P3uWL9/Q/yb7steK6Dkdo+tEU1eim3UZxkwRxjZL3QO7CAWlXrY4JC4QdGhntbS7k42JG4gg==
+
 "@iarna/toml@^2.2.0":
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
