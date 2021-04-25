@@ -1,16 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { NewTask, TasksList } from '~/components'
+import { TasksProvider } from '~/context'
 
-const App = () => {
-  const [tasks] = useState([{ id: 't1', text: 'Practice React!' }])
-
-  return (
-    <>
-      <NewTask />
-      <TasksList tasks={tasks} />
-    </>
-  )
-}
+const App = () => (
+  <TasksProvider>
+    <NewTask />
+    <TasksList />
+  </TasksProvider>
+)
 
 export default App
