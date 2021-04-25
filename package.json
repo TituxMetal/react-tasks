@@ -1,0 +1,39 @@
+{
+  "author": "Titux Metal <github@lgdweb.fr>",
+  "description": "React Tasks project from react complete guide course on Udemy.",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "react-tasks",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "clear": "rm -rf ./.cache ./dist",
+    "prebuild": "yarn clear",
+    "build": "parcel build ./src/index.html --public-url ./",
+    "lint": "prettier --write 'src/**/*.js' src/index.html",
+    "watch": "parcel src/index.html -p 3000"
+  },
+  "dependencies": {
+    "@reach/router": "^1.3.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-kentcdodds": "^14.14.1",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^2.1.2"
+  },
+  "browserslist": [
+    ">10%",
+    "chrome 76",
+    "not dead",
+    "not op_mini all"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TituxMetal/react-tasks"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "extends": [
+    "kentcdodds/jsx-a11y",
+    "kentcdodds/react",
+    "kentcdodds",
+    "prettier"
+  ],
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "extensions": [".js"],
+        "map": [["~", "./src"]]
+      }
+    }
+  },
+  "rules": {
+    "arrow-body-style": ["error", "as-needed"],
+    "arrow-parens": ["error", "as-needed"],
+    "import/order": [
+      "error",
+      {
+        "alphabetize": { "order": "asc", "caseInsensitive": true },
+        "newlines-between": "always",
+        "pathGroups": [
+          {
+            "pattern": "~/**",
+            "group": "parent"
+          }
+        ]
+      }
+    ],
+    "react-hooks/exhaustive-deps": 0,
+    "react/prop-types": 0
+  }
+}
