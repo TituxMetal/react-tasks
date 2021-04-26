@@ -20,7 +20,7 @@ const TasksList = () => {
             ))}
           </ul>
         )}
-        {!isLoading && tasks.length === 0 && (
+        {!isLoading && !error && tasks.length === 0 && (
           <p>No task found, start adding some!</p>
         )}
         {isLoading && <p>Loading...</p>}
