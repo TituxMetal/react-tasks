@@ -1,70 +1,49 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { useHttp } from '~/hooks'
+
 import TasksContext from './TasksContext'
 
 const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const { error, isLoading, sendRequest } = useHttp()
 
-  const apiUrl =
-    'https://react-http-8eefe-default-rtdb.firebaseio.com/tasks.json'
+  const url = 'https://react-http-8eefe-default-rtdb.firebaseio.com/tasks.json'
 
-  const fetchTasks = useCallback(async () => {
-    setIsLoading(true)
-    setError(null)
+  const formatData = data => {
+    if (data) {
+      const loadedData = Object.entries(data).map(([id, obj]) => ({
+        id,
+        ...obj
+      }))
 
-    try {
-      const response = await fetch(apiUrl)
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!')
-      }
-
-      const data = await response.json()
-
-      if (data) {
-        const loadedData = Object.entries(data).map(([id, obj]) => ({
-          id,
-          ...obj
-        }))
-
-        setTasks(loadedData || [])
-      }
-    } catch (err) {
-      setError(err.message)
+      setTasks(loadedData)
     }
+  }
 
-    setIsLoading(false)
-  }, [])
+  const fetchTasks = useCallback(() => sendRequest({ url }, formatData), [])
 
-  const addTask = useCallback(async taskText => {
-    setError(null)
-
-    try {
+  const addTask = useCallback(
+    taskText => {
       const token = process.env.FIREBASE_TOKEN
-      const response = await fetch(`${apiUrl}?auth=${token}`, {
+      const apiUrl = `${url}?auth=${token}`
+      const requestConfig = {
+        url: apiUrl,
+        headers: { 'Content-Type': 'application/json' },
         method: 'POST',
-        body: JSON.stringify({ text: taskText })
-      })
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!')
+        body: { text: taskText.trim() }
       }
 
-      const data = await response.json()
+      const cb = data =>
+        setTasks(previousState => [
+          ...previousState,
+          { id: data.name, text: taskText }
+        ])
 
-      if (!data) {
-        throw new Error('Something went wrong!')
-      }
-
-      const createdTask = { id: data.name, text: taskText }
-
-      setTasks(previousState => [...previousState, createdTask])
-    } catch (err) {
-      setError(err.message)
-    }
-  }, [])
+      return sendRequest(requestConfig, cb)
+    },
+    [sendRequest]
+  )
 
   useEffect(() => {
     fetchTasks()
