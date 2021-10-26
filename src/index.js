@@ -1,10 +1,14 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import '@fontsource/noto-sans-jp/400.css'
-import '@fontsource/noto-sans-jp/700.css'
+import { render } from 'react-dom'
 
-import './index.css'
+import { StyleProvider } from '~/core'
+import Routes from '~/routes'
 
-import App from './App'
+const element = document.getElementById('root')
 
-ReactDOM.render(<App />, document.getElementById('root'))
+render(
+  <StyleProvider>
+    <Routes />
+  </StyleProvider>,
+  element
+)
