@@ -1,3 +1,2 @@
-export * from './NewTask'
-export * from './Tasks'
-export * from './ui'
+export { default as TaskForm } from './TaskForm'
+export { default as Tasks } from './Tasks'
