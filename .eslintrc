@@ -19,7 +19,11 @@
     "import/order": [
       "error",
       {
-        "alphabetize": { "order": "asc", "caseInsensitive": true },
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "groups": [["builtin", "external"], "internal", "parent", "sibling"],
         "newlines-between": "always",
         "pathGroups": [
           {
@@ -29,7 +33,10 @@
         ]
       }
     ],
+    "jsx-quotes": ["error", "prefer-single"],
+    "babel/no-invalid-this": 0,
     "react-hooks/exhaustive-deps": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "semi": "off"
   }
 }
