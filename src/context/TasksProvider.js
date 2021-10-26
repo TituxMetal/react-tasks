@@ -8,14 +8,11 @@ const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState([])
   const { error, isLoading, sendRequest } = useHttp()
 
-  const url = 'https://react-http-8eefe-default-rtdb.firebaseio.com/tasks.json'
+  const url = process.env.API_URI
 
   const formatData = data => {
     if (data) {
-      const loadedData = Object.entries(data).map(([id, obj]) => ({
-        id,
-        ...obj
-      }))
+      const loadedData = Object.entries(data).map(([id, obj]) => ({ id, ...obj }))
 
       setTasks(loadedData)
     }
@@ -25,20 +22,15 @@ const TasksProvider = ({ children }) => {
 
   const addTask = useCallback(
     taskText => {
-      const token = process.env.FIREBASE_TOKEN
-      const apiUrl = `${url}?auth=${token}`
       const requestConfig = {
-        url: apiUrl,
+        url,
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
         body: { text: taskText.trim() }
       }
 
       const cb = data =>
-        setTasks(previousState => [
-          ...previousState,
-          { id: data.name, text: taskText }
-        ])
+        setTasks(previousState => [...previousState, { id: data.name, text: taskText }])
 
       return sendRequest(requestConfig, cb)
     },
