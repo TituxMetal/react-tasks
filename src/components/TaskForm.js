@@ -1,56 +1,45 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import tw, { styled } from 'twin.macro'
+import { yupResolver } from '@hookform/resolvers/yup'
+import React, { useContext, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 
+import { Form } from '~/components'
 import { TasksContext } from '~/context'
 
-const Button = styled.button(() => [
-  tw`cursor-pointer py-1 px-4 font-bold rounded-2xl`,
-  tw`bg-transparent ring-2 ring-red-500 text-red-300`,
-  tw`hover:(bg-red-800 text-red-200) disabled:(cursor-not-allowed opacity-50 text-gray-300 bg-gray-500)`
-])
-const Form = styled.form(tw`flex justify-between my-4`)
-const Input = styled.input(() => [
-  tw`p-2 border-b-2 border-red-500 flex mr-1 bg-gray-600 shadow-2xl w-9/12`,
-  tw`focus:(outline-none border-red-600) placeholder:text-gray-100`
-])
+const formSchema = yup.object().shape({
+  text: yup.string().min(4).trim().required().label('Text'),
+  isDone: yup.boolean()
+})
+const defaultValues = { text: '', isDone: false }
 
 const TaskForm = () => {
-  const [isSending, setIsSending] = useState(false)
-  const [isValid, setIsValid] = useState(false)
-  const textInputRef = useRef()
-  const { addTask, error } = useContext(TasksContext)
+  const { addTask } = useContext(TasksContext)
+  const {
+    handleSubmit,
+    register,
+    setFocus,
+    formState: { errors, isValid, isSubmitting }
+  } = useForm({ defaultValues, mode: 'all', resolver: yupResolver(formSchema) })
 
   useEffect(() => {
-    if (textInputRef.current) {
-      textInputRef.current.focus()
-    }
-  }, [])
+    setFocus('text')
+  }, [setFocus])
 
-  const onHandleChange = () => setIsValid(textInputRef.current.value.length > 4)
-
-  const onSubmitHandler = event => {
-    event.preventDefault()
-    setIsSending(true)
-    addTask(textInputRef.current.value)
-    textInputRef.current.value = ''
-    setIsSending(false)
-  }
+  const onSubmitHandler = data => addTask(data)
 
   return (
-    <>
-      <Form className='form' onSubmit={onSubmitHandler}>
-        <Input
-          type='text'
-          placeholder='Add a new task...'
-          onChange={onHandleChange}
-          ref={textInputRef}
-        />
-        <Button type='submit' disabled={!isValid}>
-          {isSending ? 'Sending...' : 'Add Task'}
-        </Button>
-      </Form>
-      {error && <p>{error}</p>}
-    </>
+    <Form onSubmit={handleSubmit(onSubmitHandler)}>
+      <Form.Input
+        error={errors?.text}
+        type='text'
+        placeholder='Add a new task...'
+        {...register('text')}
+      />
+      <Form.Button type='submit' disabled={!isValid}>
+        {isSubmitting ? 'Sending...' : 'Add Task'}
+      </Form.Button>
+      {errors && <Form.Message error>{errors?.text?.message}</Form.Message>}
+    </Form>
   )
 }
 
