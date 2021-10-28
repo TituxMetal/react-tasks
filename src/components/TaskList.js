@@ -1,15 +1,12 @@
 import React, { useContext } from 'react'
 import tw, { styled } from 'twin.macro'
 
+import { Item } from '~/components'
 import { TasksContext } from '~/context'
 
 const List = styled.ul(tw`text-left my-4 m-auto divide-y-2 divide-red-500`)
-const TaskItem = styled.li(({ isDone }) => [
-  tw`py-4 px-1 cursor-pointer font-bold text-xl`,
-  isDone && tw`line-through`
-])
 
-const Tasks = () => {
+const TaskList = () => {
   const { isLoading, error, tasks } = useContext(TasksContext)
 
   return (
@@ -18,9 +15,7 @@ const Tasks = () => {
       {!isLoading && tasks.length > 0 && (
         <List>
           {tasks.map(task => (
-            <TaskItem key={task.id} isDone={task.isDone}>
-              {task.text}
-            </TaskItem>
+            <Item key={task.id} item={task} />
           ))}
         </List>
       )}
@@ -28,4 +23,4 @@ const Tasks = () => {
   )
 }
 
-export default Tasks
+export default TaskList

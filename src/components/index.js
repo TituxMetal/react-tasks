@@ -1,3 +1,3 @@
 export * from './common'
 export { default as TaskForm } from './TaskForm'
-export { default as Tasks } from './Tasks'
+export { default as TaskList } from './TaskList'
