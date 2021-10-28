@@ -18,19 +18,20 @@ const TaskForm = () => {
     handleSubmit,
     register,
     setFocus,
-    formState: { errors, isValid, isSubmitting }
+    formState: { errors, isValid, isDirty, isSubmitting },
+    reset
   } = useForm({ defaultValues, mode: 'all', resolver: yupResolver(formSchema) })
 
   useEffect(() => {
     setFocus('text')
   }, [setFocus])
 
-  const onSubmitHandler = data => addTask(data)
+  const onSubmitHandler = data => addTask(data) && reset({ text: '' })
 
   return (
     <Form onSubmit={handleSubmit(onSubmitHandler)}>
       <Form.Input
-        error={errors?.text}
+        error={isDirty && errors.text}
         type='text'
         placeholder='Add a new task...'
         {...register('text')}
@@ -38,7 +39,7 @@ const TaskForm = () => {
       <Form.Button type='submit' disabled={!isValid}>
         {isSubmitting ? 'Sending...' : 'Add Task'}
       </Form.Button>
-      {errors && <Form.Message error>{errors?.text?.message}</Form.Message>}
+      {isDirty && errors && <Form.Message error>{errors?.text?.message}</Form.Message>}
     </Form>
   )
 }
