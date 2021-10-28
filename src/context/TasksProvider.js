@@ -8,8 +8,6 @@ const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState([])
   const { error, isLoading, sendRequest } = useHttp()
 
-  const url = process.env.API_URI
-
   const formatData = data => {
     if (data) {
       const loadedData = Object.entries(data).map(([id, obj]) => ({ id, ...obj }))
@@ -18,21 +16,55 @@ const TasksProvider = ({ children }) => {
     }
   }
 
+  const url = `${process.env.FIREBASE_API_URI}.json?auth=${process.env.FIREBASE_TOKEN}`
+
   const fetchTasks = useCallback(() => sendRequest({ url }, formatData), [])
 
   const addTask = useCallback(
-    taskText => {
+    taskData => {
       const requestConfig = {
         url,
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
-        body: { text: taskText.trim() }
+        body: taskData
       }
 
-      const cb = data =>
-        setTasks(previousState => [...previousState, { id: data.name, text: taskText }])
+      return sendRequest(requestConfig, ({ name }) =>
+        setTasks(prev => [...prev, { id: name, ...taskData }])
+      )
+    },
+    [sendRequest]
+  )
 
-      return sendRequest(requestConfig, cb)
+  const deleteTask = useCallback(
+    task => {
+      const apiUrl = `${process.env.FIREBASE_API_URI}/${task.id}/.json?auth=${process.env.FIREBASE_TOKEN}`
+      const requestConfig = {
+        url: apiUrl,
+        headers: { 'Content-Type': 'application/json' },
+        method: 'DELETE'
+      }
+
+      return sendRequest(requestConfig, () =>
+        setTasks(prev => prev.filter(item => item.id !== task.id))
+      )
+    },
+    [sendRequest]
+  )
+
+  const toggleIsDone = useCallback(
+    task => {
+      const apiUrl = `${process.env.FIREBASE_API_URI}/${task.id}/.json?auth=${process.env.FIREBASE_TOKEN}`
+      const requestConfig = {
+        url: apiUrl,
+        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH',
+        body: { isDone: !task.isDone }
+      }
+
+      return sendRequest(requestConfig, ({ isDone }) =>
+        setTasks(prev => prev.map(item => (item.id === task.id ? { ...item, isDone } : item)))
+      )
     },
     [sendRequest]
   )
@@ -42,7 +74,7 @@ const TasksProvider = ({ children }) => {
   }, [fetchTasks])
 
   return (
-    <TasksContext.Provider value={{ tasks, error, isLoading, addTask }}>
+    <TasksContext.Provider value={{ tasks, error, isLoading, addTask, deleteTask, toggleIsDone }}>
       {children}
     </TasksContext.Provider>
   )
